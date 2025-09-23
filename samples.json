@@ -3,12 +3,32 @@
     "title": "SwiftUI 形狀繪製兔子（動畫版）",
     "url": "https://gist.github.com/PeterPanSwift/876537f6a31341cbbb02b4fce215a21a",
     "previewImage": "pic/pic1.png",
-    "tags": ["swiftui", "shape", "animation", "兔子"]
+    "tags": [
+      "swiftui",
+      "shape",
+      "animation",
+      "兔子"
+    ]
   },
   {
     "title": "SwiftUI VStack 與 HStack 企鵝介紹",
     "url": "https://gist.github.com/PeterPanSwift/644df44f0e14d72630b5caa1c9360cd0",
     "previewImage": "pic/pic2.png",
-    "tags": ["swiftui", "vstack", "hstack", "企鵝"]
+    "tags": [
+      "swiftui",
+      "vstack",
+      "hstack",
+      "企鵝"
+    ]
+  },
+  {
+    "title": "小王子介紹",
+    "url": "https://gist.github.com/PeterPanSwift/6e22bf1cbf2d08365c2905254f044936",
+    "previewImage": "pic/pic6.png",
+    "tags": [
+      "swiftui",
+      "about",
+      "小王子"
+    ]
   }
 ]
