@@ -41,7 +41,7 @@
   <main>
     <section id="apps" class="app-grid" aria-labelledby="apps-title">
       <div class="section-heading">
-        <h2 id="apps-title">App 星球清單</h2>
+        <h2 id="apps-title">App星雲</h2>
         <p>選一顆星，拜訪不同世界裡的 AI 靈感。</p>
       </div>
       <div class="search" role="search">
@@ -58,7 +58,14 @@
         <p id="search-hint" class="search-hint">即時篩選下方 App</p>
       </div>
 
-      <div class="cards" data-empty-message="找不到符合的 App，小王子仍在尋找中。"></div>
+      <div
+        class="cards"
+        data-empty-message="找不到符合的 App，小王子仍在尋找中。"
+        data-limit="3"
+      ></div>
+      <div class="section-actions">
+        <a class="all-link" href="apps.html">All</a>
+      </div>
     </section>
 
     <section id="samples" class="code-grid" aria-labelledby="samples-title">
@@ -83,7 +90,11 @@
       <div
         class="cards sample-cards"
         data-empty-message="找不到符合的程式範例，小王子正在編排程式星塵。"
+        data-limit="3"
       ></div>
+      <div class="section-actions">
+        <a class="all-link" href="samples.html">All</a>
+      </div>
     </section>
 
     <section id="about" class="about" aria-labelledby="about-title">
@@ -101,194 +112,6 @@
     <span>© B612 AI App Gallery · 保留一點童真。</span>
   </footer>
 
-  <script>
-    const appCardsContainer = document.querySelector('#apps .cards');
-    const sampleCardsContainer = document.querySelector('#samples .sample-cards');
-
-    const appConfig = {
-      input: document.querySelector('#app-search'),
-      container: appCardsContainer,
-      url: 'apps.json',
-      defaultEmptyMessage:
-        appCardsContainer?.dataset.emptyMessage || '找不到符合的 App，小王子仍在尋找中。',
-      loadingMessage: '載入 App 清單中...',
-      errorMessage: '無法載入 App 清單，請稍後再試。',
-      build: createAppCard,
-      extras: (item) => (item.github ? ['github'] : []),
-      records: [],
-    };
-
-    const sampleConfig = {
-      input: document.querySelector('#sample-search'),
-      container: sampleCardsContainer,
-      url: 'samples.json',
-      defaultEmptyMessage:
-        sampleCardsContainer?.dataset.emptyMessage || '找不到程式範例，小王子正在編排程式星塵。',
-      loadingMessage: '載入程式範例中...',
-      errorMessage: '無法載入程式範例，請稍後再試。',
-      build: createSampleCard,
-      extras: () => ['code', 'sample', '程式範例'],
-      records: [],
-    };
-
-    const datasets = [appConfig, sampleConfig];
-
-    datasets.forEach((config) => {
-      if (!config.container) return;
-      installSearch(config);
-      loadDataset(config);
-    });
-
-    function normalise(text) {
-      return (text || '').toLowerCase().replace(/\s+/g, '');
-    }
-
-    function showEmptyMessage(container, message, visible) {
-      let emptyState = container.querySelector('.empty-state');
-      if (!emptyState) {
-        emptyState = document.createElement('div');
-        emptyState.className = 'empty-state';
-        container.appendChild(emptyState);
-      }
-      emptyState.textContent = message;
-      emptyState.style.display = visible ? 'block' : 'none';
-    }
-
-    function renderList(config, records) {
-      config.container.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-      records.forEach((item) => {
-        fragment.appendChild(config.build(item));
-      });
-      config.container.appendChild(fragment);
-      showEmptyMessage(config.container, config.defaultEmptyMessage, records.length === 0);
-    }
-
-    function showStatus(config, message) {
-      config.container.innerHTML = '';
-      showEmptyMessage(config.container, message, true);
-    }
-
-    function prepareRecords(data, extrasFn = () => []) {
-      return data.map((item) => {
-        const extras = extrasFn(item) || [];
-        return {
-          ...item,
-          searchIndex: normalise([item.title, ...(item.tags || []), ...extras].join(' ')),
-        };
-      });
-    }
-
-    function filterRecords(config, keyword) {
-      const query = normalise(keyword);
-      if (query === '') return config.records;
-      return config.records.filter((item) => item.searchIndex.includes(query));
-    }
-
-    function installSearch(config) {
-      if (!config.input) return;
-      config.input.addEventListener('input', (event) => {
-        if (!config.records) return;
-        const filtered = filterRecords(config, event.target.value);
-        renderList(config, filtered);
-      });
-    }
-
-    async function loadDataset(config) {
-      if (!config.container) return;
-      if (config.input) {
-        config.input.disabled = true;
-      }
-      showStatus(config, config.loadingMessage);
-      try {
-        const response = await fetch(config.url);
-        if (!response.ok) throw new Error(`Failed to load ${config.url}`);
-
-        const data = await response.json();
-        config.records = prepareRecords(data, config.extras);
-        renderList(config, config.records);
-        if (config.input) {
-          config.input.disabled = false;
-        }
-      } catch (error) {
-        console.error(`Unable to load data from ${config.url}`, error);
-        showStatus(config, config.errorMessage);
-      }
-    }
-
-    function createAppCard(app) {
-      const article = document.createElement('article');
-      article.className = 'card';
-      article.dataset.title = app.title;
-      article.dataset.tags = (app.tags || []).join(' ');
-
-      const title = document.createElement('h3');
-      title.textContent = app.title;
-
-      const primaryLink = document.createElement('a');
-      primaryLink.className = 'card-link';
-      primaryLink.href = app.url;
-      primaryLink.target = '_blank';
-      primaryLink.rel = 'noopener';
-      primaryLink.textContent = '前往 App';
-
-      const actions = document.createElement('div');
-      actions.className = 'card-actions';
-      actions.appendChild(primaryLink);
-
-      if (app.github) {
-        const githubLink = document.createElement('a');
-        githubLink.className = 'card-link';
-        githubLink.href = app.github;
-        githubLink.target = '_blank';
-        githubLink.rel = 'noopener';
-        githubLink.textContent = '前往 GitHub';
-        actions.appendChild(githubLink);
-      }
-
-      article.append(title, actions);
-      return article;
-    }
-
-    function createSampleCard(sample) {
-      const article = document.createElement('article');
-      article.className = 'card sample-card';
-      article.dataset.title = sample.title;
-      article.dataset.tags = (sample.tags || []).join(' ');
-
-      if (sample.previewImage) {
-        const figure = document.createElement('div');
-        figure.className = 'sample-visual';
-
-        const img = document.createElement('img');
-        img.className = 'sample-thumb';
-        img.src = sample.previewImage;
-        img.alt = `${sample.title} 預覽圖`;
-        img.loading = 'lazy';
-        img.decoding = 'async';
-
-        figure.appendChild(img);
-        article.appendChild(figure);
-      }
-
-      const title = document.createElement('h3');
-      title.textContent = sample.title;
-
-      const actions = document.createElement('div');
-      actions.className = 'card-actions';
-
-      const codeLink = document.createElement('a');
-      codeLink.className = 'card-link';
-      codeLink.href = sample.url;
-      codeLink.target = '_blank';
-      codeLink.rel = 'noopener';
-      codeLink.textContent = '檢視程式碼';
-
-      actions.appendChild(codeLink);
-      article.append(title, actions);
-
-      return article;
-    }
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
