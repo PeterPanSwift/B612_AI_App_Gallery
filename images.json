@@ -1,7 +1,20 @@
 [
   {
+    "title": "小王子到 Swift 星球探險",
+    "image": "pic/pic4.png",
+    "tags": [
+      "swift"
+    ]
+  },
+  {
     "title": "使用 VS Code 搭配 AI Vibe Coding 開發 iOS App",
     "image": "pic/pic3.png",
-    "tags": ["vscode", "ai", "ios", "app", "coding"]
+    "tags": [
+      "vscode",
+      "ai",
+      "ios",
+      "app",
+      "coding"
+    ]
   }
 ]
