@@ -7,6 +7,15 @@
     ]
   },
   {
+    "title": "綁定字串的 SwiftUI TextField",
+    "image": "pic/pic5.png",
+    "tags": [
+      "SwiftUI",
+      "TextField",
+      "Binding"
+    ]
+  },
+  {
     "title": "使用 VS Code 搭配 AI Vibe Coding 開發 iOS App",
     "image": "pic/pic3.png",
     "tags": [
