@@ -250,11 +250,16 @@
     title.textContent = image.title;
     article.appendChild(title);
 
-    article.addEventListener('click', () => openLightbox(image));
+    const open = () => openLightbox(image);
+    article.addEventListener('click', open);
+    article.addEventListener('touchend', (event) => {
+      event.preventDefault();
+      open();
+    });
     article.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        openLightbox(image);
+        open();
       }
     });
 
@@ -324,7 +329,11 @@
     }
 
     if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
-      lastFocusedElement.focus({ preventScroll: true });
+      try {
+        lastFocusedElement.focus({ preventScroll: true });
+      } catch (error) {
+        lastFocusedElement.focus();
+      }
     }
   }
 })();
