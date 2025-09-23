@@ -4,6 +4,11 @@
   const imageCardsContainer = document.querySelector('#gallery .image-cards');
 
   const configs = [];
+  let lightbox;
+  let lightboxImage;
+  let lightboxTitle;
+  let lightboxCloseButton;
+  let lastFocusedElement;
 
   if (appCardsContainer) {
     configs.push({
@@ -223,6 +228,9 @@
     article.className = 'card image-card';
     article.dataset.title = image.title;
     article.dataset.tags = (image.tags || []).join(' ');
+    article.tabIndex = 0;
+    article.setAttribute('role', 'button');
+    article.setAttribute('aria-label', `${image.title} - 點擊放大檢視`);
 
     if (image.image) {
       const frame = document.createElement('div');
@@ -242,6 +250,81 @@
     title.textContent = image.title;
     article.appendChild(title);
 
+    article.addEventListener('click', () => openLightbox(image));
+    article.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(image);
+      }
+    });
+
     return article;
+  }
+
+  function ensureLightbox() {
+    if (lightbox) return;
+
+    lightbox = document.createElement('div');
+    lightbox.className = 'image-lightbox';
+    lightbox.innerHTML = `
+      <div class="lightbox-backdrop" data-close="true"></div>
+      <div class="lightbox-panel">
+        <button class="lightbox-close" type="button" aria-label="關閉圖片" data-close="true">×</button>
+        <img class="lightbox-image" alt="" />
+        <p class="lightbox-title"></p>
+      </div>
+    `;
+
+    document.body.appendChild(lightbox);
+
+    lightboxImage = lightbox.querySelector('.lightbox-image');
+    lightboxTitle = lightbox.querySelector('.lightbox-title');
+    lightboxCloseButton = lightbox.querySelector('.lightbox-close');
+
+    lightbox.addEventListener('click', (event) => {
+      if (event.target instanceof HTMLElement && event.target.dataset.close === 'true') {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && lightbox.classList.contains('is-open')) {
+        closeLightbox();
+      }
+    });
+  }
+
+  function openLightbox(image) {
+    ensureLightbox();
+
+    lastFocusedElement = document.activeElement;
+
+    if (lightboxImage) {
+      lightboxImage.src = image.image;
+      lightboxImage.alt = image.title;
+    }
+    if (lightboxTitle) {
+      lightboxTitle.textContent = image.title;
+    }
+
+    lightbox.classList.add('is-open');
+
+    if (lightboxCloseButton) {
+      lightboxCloseButton.focus();
+    }
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove('is-open');
+
+    if (lightboxImage) {
+      lightboxImage.src = '';
+      lightboxImage.alt = '';
+    }
+
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus({ preventScroll: true });
+    }
   }
 })();
