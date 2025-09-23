@@ -380,13 +380,14 @@ main {
 
 .sample-card {
   align-items: stretch;
-  gap: 1.25rem;
+  gap: 1.5rem;
+  min-height: 360px;
 }
 
 .sample-visual {
-  width: 85%;
+  width: 100%;
   margin: 0 auto;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 11;
   border-radius: 1.25rem;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(69, 194, 196, 0.35), rgba(255, 111, 145, 0.3));
