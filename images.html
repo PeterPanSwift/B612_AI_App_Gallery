@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>圖片星雲 | B612 Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Space+Grotesk:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="starfield" aria-hidden="true"></div>
+    <div class="header-inner">
+      <div class="logo">B612 Gallery</div>
+      <nav class="nav-links" aria-label="主要導覽">
+        <a href="index.html#apps">App</a>
+        <a href="index.html#samples">程式範例</a>
+        <a href="images.html" aria-current="page">圖片星雲</a>
+        <a href="index.html#about">故事</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">完整收藏</p>
+        <h1>圖片星雲</h1>
+        <p>
+          透過畫面紀錄開發過程的靈感碎片，從工具設定到作品完成的瞬間都在這裡。
+        </p>
+        <a class="cta" href="index.html">返回首頁</a>
+      </div>
+      <div class="hero-planet" aria-hidden="true">
+        <div class="planet"></div>
+        <div class="prince"></div>
+        <div class="rose"></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="gallery" class="image-grid" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <h2 id="gallery-title">圖片星雲</h2>
+        <p>所有圖片都在這裡，歡迎慢慢瀏覽。</p>
+      </div>
+      <div class="search" role="search">
+        <label class="search-label" for="image-search">搜尋圖片</label>
+        <input
+          type="search"
+          id="image-search"
+          name="image-search"
+          placeholder="輸入關鍵字或描述"
+          autocomplete="off"
+          aria-describedby="image-search-hint"
+          disabled
+        />
+        <p id="image-search-hint" class="search-hint">輸入關鍵字即可篩選圖片星雲</p>
+      </div>
+
+      <div class="cards image-cards" data-empty-message="找不到符合的圖片，小王子正在整理星際相冊。"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© B612 AI App Gallery · 保留一點童真。</span>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

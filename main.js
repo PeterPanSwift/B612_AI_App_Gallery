@@ -47,7 +47,7 @@
       loadingMessage: '載入圖片中...',
       errorMessage: '無法載入圖片，請稍後再試。',
       build: createImageCard,
-      extras: (item) => [item.description || 'image', 'picture'],
+      extras: (item) => ['image', 'picture', ...(item.tags || [])],
       records: [],
       limit: parseLimit(imageCardsContainer),
     });
@@ -241,13 +241,6 @@
     const title = document.createElement('h3');
     title.textContent = image.title;
     article.appendChild(title);
-
-    if (image.description) {
-      const caption = document.createElement('p');
-      caption.className = 'image-caption';
-      caption.textContent = image.description;
-      article.appendChild(caption);
-    }
 
     return article;
   }
