@@ -211,6 +211,11 @@ main {
   padding: 0 2rem 4rem;
 }
 
+#apps {
+  position: relative;
+  padding-top: 2.5rem;
+}
+
 .section-heading {
   margin-bottom: 1.75rem;
 }
@@ -218,6 +223,15 @@ main {
 .section-heading h2 {
   font-family: var(--title-font);
   font-size: 2rem;
+}
+
+#apps .section-heading h2 {
+  color: rgba(249, 246, 239, 0.96);
+  text-shadow: 0 10px 30px rgba(13, 27, 42, 0.55);
+}
+
+#apps .section-heading p {
+  color: rgba(249, 246, 239, 0.82);
 }
 
 .search {
