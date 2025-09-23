@@ -30,5 +30,10 @@
     "url": "https://peterpanswift.github.io/B612_AI_App_Gallery",
     "github": "https://github.com/PeterPanSwift/B612_AI_App_Gallery",
     "tags": ["gallery", "ai", "小王子", "網站"]
+  },
+  {
+    "title": "課程日期計算器",
+    "url": "https://my-course-calc.web.app",
+    "tags": ["flutter", "課程", "計算器", "日期"]
   }
 ]
