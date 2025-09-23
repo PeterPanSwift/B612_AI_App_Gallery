@@ -16,6 +16,7 @@
       <div class="logo">B612 Gallery</div>
       <nav class="nav-links" aria-label="主要導覽">
         <a href="#apps">App 星球</a>
+        <a href="#samples">程式範例</a>
         <a href="#about">故事</a>
       </nav>
     </div>
@@ -24,8 +25,8 @@
         <p class="eyebrow">在 B612 星球上捕捉靈感</p>
         <h1>小王子的 AI App 收藏</h1>
         <p>
-          每一顆星星都是一個想像力的宇宙。我用 AI 打造了一系列小工具，
-          想和你分享這些旅途中遇見的星球。
+          每一顆星星都是一個想像力的宇宙。我把 AI 打造成小工具，
+          也用程式紀錄旅途中綻放的靈感。
         </p>
         <a class="cta" href="#apps">探索星球</a>
       </div>
@@ -60,6 +61,31 @@
       <div class="cards" data-empty-message="找不到符合的 App，小王子仍在尋找中。"></div>
     </section>
 
+    <section id="samples" class="code-grid" aria-labelledby="samples-title">
+      <div class="section-heading">
+        <h2 id="samples-title">程式範例星雲</h2>
+        <p>收藏把靈感化作程式的筆記，從圖形到互動都在此發光。</p>
+      </div>
+      <div class="search" role="search">
+        <label class="search-label" for="sample-search">搜尋程式範例</label>
+        <input
+          type="search"
+          id="sample-search"
+          name="sample-search"
+          placeholder="輸入關鍵字、技術或描述"
+          autocomplete="off"
+          aria-describedby="sample-search-hint"
+          disabled
+        />
+        <p id="sample-search-hint" class="search-hint">用關鍵字或技術找到程式靈感</p>
+      </div>
+
+      <div
+        class="cards sample-cards"
+        data-empty-message="找不到符合的程式範例，小王子正在編排程式星塵。"
+      ></div>
+    </section>
+
     <section id="about" class="about" aria-labelledby="about-title">
       <div class="section-heading">
         <h2 id="about-title">旅人的手記</h2>
@@ -76,28 +102,121 @@
   </footer>
 
   <script>
-    const searchInput = document.querySelector('#app-search');
-    const cardsContainer = document.querySelector('.cards');
-    const defaultEmptyMessage = cardsContainer.dataset.emptyMessage;
-    const loadingMessage = '載入 App 清單中...';
-    let apps = [];
+    const appCardsContainer = document.querySelector('#apps .cards');
+    const sampleCardsContainer = document.querySelector('#samples .sample-cards');
+
+    const appConfig = {
+      input: document.querySelector('#app-search'),
+      container: appCardsContainer,
+      url: 'apps.json',
+      defaultEmptyMessage:
+        appCardsContainer?.dataset.emptyMessage || '找不到符合的 App，小王子仍在尋找中。',
+      loadingMessage: '載入 App 清單中...',
+      errorMessage: '無法載入 App 清單，請稍後再試。',
+      build: createAppCard,
+      extras: (item) => (item.github ? ['github'] : []),
+      records: [],
+    };
+
+    const sampleConfig = {
+      input: document.querySelector('#sample-search'),
+      container: sampleCardsContainer,
+      url: 'samples.json',
+      defaultEmptyMessage:
+        sampleCardsContainer?.dataset.emptyMessage || '找不到程式範例，小王子正在編排程式星塵。',
+      loadingMessage: '載入程式範例中...',
+      errorMessage: '無法載入程式範例，請稍後再試。',
+      build: createSampleCard,
+      extras: () => ['code', 'sample', '程式範例'],
+      records: [],
+    };
+
+    const datasets = [appConfig, sampleConfig];
+
+    datasets.forEach((config) => {
+      if (!config.container) return;
+      installSearch(config);
+      loadDataset(config);
+    });
 
     function normalise(text) {
-      return text.toLowerCase().replace(/\s+/g, '');
+      return (text || '').toLowerCase().replace(/\s+/g, '');
     }
 
-    function updateEmptyState(count) {
-      let emptyState = cardsContainer.querySelector('.empty-state');
+    function showEmptyMessage(container, message, visible) {
+      let emptyState = container.querySelector('.empty-state');
       if (!emptyState) {
         emptyState = document.createElement('div');
         emptyState.className = 'empty-state';
-        cardsContainer.appendChild(emptyState);
+        container.appendChild(emptyState);
       }
-      emptyState.textContent = cardsContainer.dataset.emptyMessage;
-      emptyState.style.display = count === 0 ? 'block' : 'none';
+      emptyState.textContent = message;
+      emptyState.style.display = visible ? 'block' : 'none';
     }
 
-    function createCard(app) {
+    function renderList(config, records) {
+      config.container.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+      records.forEach((item) => {
+        fragment.appendChild(config.build(item));
+      });
+      config.container.appendChild(fragment);
+      showEmptyMessage(config.container, config.defaultEmptyMessage, records.length === 0);
+    }
+
+    function showStatus(config, message) {
+      config.container.innerHTML = '';
+      showEmptyMessage(config.container, message, true);
+    }
+
+    function prepareRecords(data, extrasFn = () => []) {
+      return data.map((item) => {
+        const extras = extrasFn(item) || [];
+        return {
+          ...item,
+          searchIndex: normalise([item.title, ...(item.tags || []), ...extras].join(' ')),
+        };
+      });
+    }
+
+    function filterRecords(config, keyword) {
+      const query = normalise(keyword);
+      if (query === '') return config.records;
+      return config.records.filter((item) => item.searchIndex.includes(query));
+    }
+
+    function installSearch(config) {
+      if (!config.input) return;
+      config.input.addEventListener('input', (event) => {
+        if (!config.records) return;
+        const filtered = filterRecords(config, event.target.value);
+        renderList(config, filtered);
+      });
+    }
+
+    async function loadDataset(config) {
+      if (!config.container) return;
+      if (config.input) {
+        config.input.disabled = true;
+      }
+      showStatus(config, config.loadingMessage);
+      try {
+        const response = await fetch(config.url);
+        if (!response.ok) throw new Error(`Failed to load ${config.url}`);
+
+        const data = await response.json();
+        config.records = prepareRecords(data, config.extras);
+        renderList(config, config.records);
+        if (config.input) {
+          config.input.disabled = false;
+        }
+      } catch (error) {
+        console.error(`Unable to load data from ${config.url}`, error);
+        showStatus(config, config.errorMessage);
+      }
+    }
+
+    function createAppCard(app) {
       const article = document.createElement('article');
       article.className = 'card';
       article.dataset.title = app.title;
@@ -106,16 +225,16 @@
       const title = document.createElement('h3');
       title.textContent = app.title;
 
-      const link = document.createElement('a');
-      link.className = 'card-link';
-      link.href = app.url;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = '前往 App';
+      const primaryLink = document.createElement('a');
+      primaryLink.className = 'card-link';
+      primaryLink.href = app.url;
+      primaryLink.target = '_blank';
+      primaryLink.rel = 'noopener';
+      primaryLink.textContent = '前往 App';
 
       const actions = document.createElement('div');
       actions.className = 'card-actions';
-      actions.appendChild(link);
+      actions.appendChild(primaryLink);
 
       if (app.github) {
         const githubLink = document.createElement('a');
@@ -131,65 +250,45 @@
       return article;
     }
 
-    function renderCards(list) {
-      cardsContainer.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-      list.forEach((app) => {
-        fragment.appendChild(createCard(app));
-      });
-      cardsContainer.appendChild(fragment);
-      updateEmptyState(list.length);
-    }
+    function createSampleCard(sample) {
+      const article = document.createElement('article');
+      article.className = 'card sample-card';
+      article.dataset.title = sample.title;
+      article.dataset.tags = (sample.tags || []).join(' ');
 
-    function filterApps(keyword) {
-      const query = normalise(keyword);
-      if (query === '') {
-        renderCards(apps);
-        return;
+      if (sample.previewImage) {
+        const figure = document.createElement('div');
+        figure.className = 'sample-visual';
+
+        const img = document.createElement('img');
+        img.className = 'sample-thumb';
+        img.src = sample.previewImage;
+        img.alt = `${sample.title} 預覽圖`;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+
+        figure.appendChild(img);
+        article.appendChild(figure);
       }
 
-      const filtered = apps.filter((app) => app.searchIndex.includes(query));
-      renderCards(filtered);
+      const title = document.createElement('h3');
+      title.textContent = sample.title;
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+
+      const codeLink = document.createElement('a');
+      codeLink.className = 'card-link';
+      codeLink.href = sample.url;
+      codeLink.target = '_blank';
+      codeLink.rel = 'noopener';
+      codeLink.textContent = '檢視程式碼';
+
+      actions.appendChild(codeLink);
+      article.append(title, actions);
+
+      return article;
     }
-
-    function prepareApps(data) {
-      return data.map((app) => {
-        const extras = app.github ? ['github'] : [];
-        return {
-          ...app,
-          searchIndex: normalise([app.title, ...(app.tags || []), ...extras].join(' ')),
-        };
-      });
-    }
-
-    async function loadApps() {
-      try {
-        cardsContainer.dataset.emptyMessage = loadingMessage;
-        updateEmptyState(0);
-
-        const response = await fetch('apps.json');
-        if (!response.ok) throw new Error('Failed to load apps.json');
-
-        const data = await response.json();
-        apps = prepareApps(data);
-        cardsContainer.dataset.emptyMessage = defaultEmptyMessage;
-        renderCards(apps);
-        searchInput.disabled = false;
-      } catch (error) {
-        console.error('Unable to load apps', error);
-        cardsContainer.dataset.emptyMessage = '無法載入 App 清單，請稍後再試。';
-        cardsContainer.innerHTML = '';
-        updateEmptyState(0);
-      }
-    }
-
-    if (searchInput) {
-      searchInput.addEventListener('input', (event) => {
-        filterApps(event.target.value);
-      });
-    }
-
-    loadApps();
   </script>
 </body>
 </html>
