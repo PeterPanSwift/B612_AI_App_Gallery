@@ -24,5 +24,11 @@
     "title": "幸運抽獎時間",
     "url": "https://claude.ai/public/artifacts/04e13263-31d3-48f4-843f-80bb036131c5",
     "tags": ["luck", "抽獎", "遊戲", "claude"]
+  },
+  {
+    "title": "小王子的 AI App 收藏",
+    "url": "https://peterpanswift.github.io/B612_AI_App_Gallery",
+    "github": "https://github.com/PeterPanSwift/B612_AI_App_Gallery",
+    "tags": ["gallery", "ai", "小王子", "網站"]
   }
 ]
