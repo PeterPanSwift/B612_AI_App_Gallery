@@ -295,6 +295,17 @@ main {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.home #apps .card {
+  background: linear-gradient(150deg, rgba(255, 181, 102, 0.35), rgba(69, 194, 196, 0.35));
+  border-color: rgba(255, 246, 239, 0.45);
+  box-shadow: 0 20px 38px rgba(255, 181, 102, 0.25), 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.home #apps .card h3 {
+  color: var(--stardust);
+  text-shadow: 0 4px 12px rgba(13, 27, 42, 0.4);
+}
+
 .card:hover,
 .card:focus-within {
   transform: translateY(-6px);
@@ -360,8 +371,9 @@ main {
 }
 
 .sample-visual {
-  width: 100%;
-  aspect-ratio: 16 / 10;
+  width: 85%;
+  margin: 0 auto;
+  aspect-ratio: 4 / 3;
   border-radius: 1.25rem;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(69, 194, 196, 0.35), rgba(255, 111, 145, 0.3));
@@ -425,6 +437,7 @@ main {
   }
 
   .sample-visual {
+    width: 100%;
     aspect-ratio: 4 / 3;
   }
 
