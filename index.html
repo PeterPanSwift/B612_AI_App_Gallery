@@ -113,7 +113,21 @@
       link.rel = 'noopener';
       link.textContent = '前往 App';
 
-      article.append(title, link);
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      actions.appendChild(link);
+
+      if (app.github) {
+        const githubLink = document.createElement('a');
+        githubLink.className = 'card-link';
+        githubLink.href = app.github;
+        githubLink.target = '_blank';
+        githubLink.rel = 'noopener';
+        githubLink.textContent = '前往 GitHub';
+        actions.appendChild(githubLink);
+      }
+
+      article.append(title, actions);
       return article;
     }
 
@@ -139,10 +153,13 @@
     }
 
     function prepareApps(data) {
-      return data.map((app) => ({
-        ...app,
-        searchIndex: normalise([app.title, ...(app.tags || [])].join(' ')),
-      }));
+      return data.map((app) => {
+        const extras = app.github ? ['github'] : [];
+        return {
+          ...app,
+          searchIndex: normalise([app.title, ...(app.tags || []), ...extras].join(' ')),
+        };
+      });
     }
 
     async function loadApps() {
