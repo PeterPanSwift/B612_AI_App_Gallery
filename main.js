@@ -1,6 +1,7 @@
 (function () {
   const appCardsContainer = document.querySelector('#apps .cards');
   const sampleCardsContainer = document.querySelector('#samples .sample-cards');
+  const imageCardsContainer = document.querySelector('#gallery .image-cards');
 
   const configs = [];
 
@@ -33,6 +34,22 @@
       extras: () => ['code', 'sample', '程式範例'],
       records: [],
       limit: parseLimit(sampleCardsContainer),
+    });
+  }
+
+  if (imageCardsContainer) {
+    configs.push({
+      input: document.querySelector('#image-search'),
+      container: imageCardsContainer,
+      url: 'images.json',
+      defaultEmptyMessage:
+        imageCardsContainer.dataset.emptyMessage || '找不到圖片，小王子正在整理相冊。',
+      loadingMessage: '載入圖片中...',
+      errorMessage: '無法載入圖片，請稍後再試。',
+      build: createImageCard,
+      extras: (item) => [item.description || 'image', 'picture'],
+      records: [],
+      limit: parseLimit(imageCardsContainer),
     });
   }
 
@@ -197,6 +214,40 @@
 
     actions.appendChild(codeLink);
     article.append(title, actions);
+
+    return article;
+  }
+
+  function createImageCard(image) {
+    const article = document.createElement('article');
+    article.className = 'card image-card';
+    article.dataset.title = image.title;
+    article.dataset.tags = (image.tags || []).join(' ');
+
+    if (image.image) {
+      const frame = document.createElement('div');
+      frame.className = 'image-visual';
+
+      const img = document.createElement('img');
+      img.src = image.image;
+      img.alt = image.title;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+
+      frame.appendChild(img);
+      article.appendChild(frame);
+    }
+
+    const title = document.createElement('h3');
+    title.textContent = image.title;
+    article.appendChild(title);
+
+    if (image.description) {
+      const caption = document.createElement('p');
+      caption.className = 'image-caption';
+      caption.textContent = image.description;
+      article.appendChild(caption);
+    }
 
     return article;
   }

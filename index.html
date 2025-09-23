@@ -73,6 +73,21 @@
       </div>
     </section>
 
+    <section id="gallery" class="image-grid home-gallery" aria-labelledby="gallery-title">
+      <div class="section-heading">
+        <h2 id="gallery-title">圖片星雲</h2>
+        <p>用畫面捕捉每一刻的靈感與實驗，瀏覽最新的創作側寫。</p>
+      </div>
+      <div class="search" role="search">
+        <label class="search-label" for="image-search">搜尋圖片</label>
+        <input type="search" id="image-search" name="image-search" placeholder="輸入關鍵字或描述" autocomplete="off"
+          aria-describedby="image-search-hint" disabled />
+        <p id="image-search-hint" class="search-hint">輸入關鍵字即可篩選圖片星雲</p>
+      </div>
+
+      <div class="cards image-cards" data-empty-message="找不到符合的圖片，小王子正在整理星際相冊。" data-limit="3"></div>
+    </section>
+
     <section id="about" class="about" aria-labelledby="about-title">
       <div class="section-heading">
         <h2 id="about-title">旅人的手記</h2>
