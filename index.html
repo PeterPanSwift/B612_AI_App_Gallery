@@ -52,36 +52,12 @@
           placeholder="輸入關鍵字、技術或敘述"
           autocomplete="off"
           aria-describedby="search-hint"
+          disabled
         />
         <p id="search-hint" class="search-hint">即時篩選下方 App</p>
       </div>
 
-      <div class="cards" data-empty-message="找不到符合的 App，小王子仍在尋找中。">
-        <article class="card" data-title="SwiftUI View Hierarchy" data-tags="swiftui swift apple 視圖 層級">
-          <h3>SwiftUI View Hierarchy</h3>
-          <a class="card-link" href="https://peterpanswift.github.io/swiftui-view-hierarchy" target="_blank" rel="noopener">前往 App</a>
-        </article>
-
-        <article class="card" data-title="iTunes 歌曲搜尋" data-tags="flutter music itunes 搜尋 歌曲">
-          <h3>iTunes 歌曲搜尋</h3>
-          <a class="card-link" href="https://flutter-itunes-search.web.app" target="_blank" rel="noopener">前往 App</a>
-        </article>
-
-        <article class="card" data-title="Dictionary 樹狀圖" data-tags="claude dictionary 詞典 視覺化">
-          <h3>Dictionary 樹狀圖</h3>
-          <a class="card-link" href="https://claude.ai/public/artifacts/0ffa0efa-88f7-4c58-9283-82d659da7e5c" target="_blank" rel="noopener">前往 App</a>
-        </article>
-
-        <article class="card" data-title="個人的 Medium 文章搜尋網站" data-tags="medium ai 搜尋 文章 本機">
-          <h3>個人的 Medium 文章搜尋網站</h3>
-          <a class="card-link" href="https://medium.com/%E5%BD%BC%E5%BE%97%E6%BD%98%E7%9A%84-swift-ios-app-%E9%96%8B%E7%99%BC%E5%95%8F%E9%A1%8C%E8%A7%A3%E7%AD%94%E9%9B%86/%E5%88%A9%E7%94%A8-ai-%E5%9C%A8%E6%9C%AC%E6%A9%9F%E5%BB%BA%E7%AB%8B%E5%80%8B%E4%BA%BA%E7%9A%84-medium-%E6%96%87%E7%AB%A0%E6%90%9C%E5%B0%8B%E7%B6%B2%E7%AB%99-62dad69912ac" target="_blank" rel="noopener">前往 App</a>
-        </article>
-
-        <article class="card" data-title="幸運抽獎時間" data-tags="luck 抽獎 遊戲 claude">
-          <h3>幸運抽獎時間</h3>
-          <a class="card-link" href="https://claude.ai/public/artifacts/04e13263-31d3-48f4-843f-80bb036131c5" target="_blank" rel="noopener">前往 App</a>
-        </article>
-      </div>
+      <div class="cards" data-empty-message="找不到符合的 App，小王子仍在尋找中。"></div>
     </section>
 
     <section id="about" class="about" aria-labelledby="about-title">
@@ -102,51 +78,101 @@
   <script>
     const searchInput = document.querySelector('#app-search');
     const cardsContainer = document.querySelector('.cards');
-    const cards = Array.from(cardsContainer.querySelectorAll('.card'));
+    const defaultEmptyMessage = cardsContainer.dataset.emptyMessage;
+    const loadingMessage = '載入 App 清單中...';
+    let apps = [];
 
     function normalise(text) {
       return text.toLowerCase().replace(/\s+/g, '');
     }
 
-    function updateEmptyState(filteredCount) {
+    function updateEmptyState(count) {
       let emptyState = cardsContainer.querySelector('.empty-state');
       if (!emptyState) {
         emptyState = document.createElement('div');
         emptyState.className = 'empty-state';
-        emptyState.textContent = cardsContainer.dataset.emptyMessage;
         cardsContainer.appendChild(emptyState);
       }
-      emptyState.style.display = filteredCount === 0 ? 'block' : 'none';
+      emptyState.textContent = cardsContainer.dataset.emptyMessage;
+      emptyState.style.display = count === 0 ? 'block' : 'none';
     }
 
-    function filterCards(keyword) {
-      const query = normalise(keyword);
-      let visibleCount = 0;
+    function createCard(app) {
+      const article = document.createElement('article');
+      article.className = 'card';
+      article.dataset.title = app.title;
+      article.dataset.tags = (app.tags || []).join(' ');
 
-      cards.forEach((card) => {
-        const data = [
-          card.dataset.title || '',
-          card.dataset.tags || '',
-          card.textContent || '',
-        ]
-          .join(' ')
-          .toLowerCase();
+      const title = document.createElement('h3');
+      title.textContent = app.title;
 
-        const matches = query === '' || data.includes(query);
-        card.style.display = matches ? '' : 'none';
-        if (matches) visibleCount += 1;
+      const link = document.createElement('a');
+      link.className = 'card-link';
+      link.href = app.url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = '前往 App';
+
+      article.append(title, link);
+      return article;
+    }
+
+    function renderCards(list) {
+      cardsContainer.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+      list.forEach((app) => {
+        fragment.appendChild(createCard(app));
       });
+      cardsContainer.appendChild(fragment);
+      updateEmptyState(list.length);
+    }
 
-      updateEmptyState(visibleCount);
+    function filterApps(keyword) {
+      const query = normalise(keyword);
+      if (query === '') {
+        renderCards(apps);
+        return;
+      }
+
+      const filtered = apps.filter((app) => app.searchIndex.includes(query));
+      renderCards(filtered);
+    }
+
+    function prepareApps(data) {
+      return data.map((app) => ({
+        ...app,
+        searchIndex: normalise([app.title, ...(app.tags || [])].join(' ')),
+      }));
+    }
+
+    async function loadApps() {
+      try {
+        cardsContainer.dataset.emptyMessage = loadingMessage;
+        updateEmptyState(0);
+
+        const response = await fetch('apps.json');
+        if (!response.ok) throw new Error('Failed to load apps.json');
+
+        const data = await response.json();
+        apps = prepareApps(data);
+        cardsContainer.dataset.emptyMessage = defaultEmptyMessage;
+        renderCards(apps);
+        searchInput.disabled = false;
+      } catch (error) {
+        console.error('Unable to load apps', error);
+        cardsContainer.dataset.emptyMessage = '無法載入 App 清單，請稍後再試。';
+        cardsContainer.innerHTML = '';
+        updateEmptyState(0);
+      }
     }
 
     if (searchInput) {
       searchInput.addEventListener('input', (event) => {
-        filterCards(event.target.value);
+        filterApps(event.target.value);
       });
     }
 
-    filterCards('');
+    loadApps();
   </script>
 </body>
 </html>

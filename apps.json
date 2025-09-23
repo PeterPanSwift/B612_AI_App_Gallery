@@ -1,0 +1,27 @@
+[
+  {
+    "title": "SwiftUI View Hierarchy",
+    "url": "https://peterpanswift.github.io/swiftui-view-hierarchy",
+    "tags": ["swiftui", "swift", "apple", "視圖", "層級"]
+  },
+  {
+    "title": "iTunes 歌曲搜尋",
+    "url": "https://flutter-itunes-search.web.app",
+    "tags": ["flutter", "music", "itunes", "搜尋", "歌曲"]
+  },
+  {
+    "title": "Dictionary 樹狀圖",
+    "url": "https://claude.ai/public/artifacts/0ffa0efa-88f7-4c58-9283-82d659da7e5c",
+    "tags": ["claude", "dictionary", "詞典", "視覺化"]
+  },
+  {
+    "title": "個人的 Medium 文章搜尋網站",
+    "url": "https://medium.com/%E5%BD%BC%E5%BE%97%E6%BD%98%E7%9A%84-swift-ios-app-%E9%96%8B%E7%99%BC%E5%95%8F%E9%A1%8C%E8%A7%A3%E7%AD%94%E9%9B%86/%E5%88%A9%E7%94%A8-ai-%E5%9C%A8%E6%9C%AC%E6%A9%9F%E5%BB%BA%E7%AB%8B%E5%80%8B%E4%BA%BA%E7%9A%84-medium-%E6%96%87%E7%AB%A0%E6%90%9C%E5%B0%8B%E7%B6%B2%E7%AB%99-62dad69912ac",
+    "tags": ["medium", "ai", "搜尋", "文章", "本機"]
+  },
+  {
+    "title": "幸運抽獎時間",
+    "url": "https://claude.ai/public/artifacts/04e13263-31d3-48f4-843f-80bb036131c5",
+    "tags": ["luck", "抽獎", "遊戲", "claude"]
+  }
+]
