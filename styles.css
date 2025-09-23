@@ -216,6 +216,10 @@ main {
   padding-top: 2.5rem;
 }
 
+.home #apps {
+  padding-top: 4.5rem;
+}
+
 .section-heading {
   margin-bottom: 1.75rem;
 }
