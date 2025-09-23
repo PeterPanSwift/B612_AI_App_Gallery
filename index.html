@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>小王子 AI App 星球</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="starfield" aria-hidden="true"></div>
+    <div class="header-inner">
+      <div class="logo">B612 Gallery</div>
+      <nav class="nav-links" aria-label="主要導覽">
+        <a href="#apps">App 星球</a>
+        <a href="#about">故事</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">在 B612 星球上捕捉靈感</p>
+        <h1>小王子的 AI App 收藏</h1>
+        <p>
+          每一顆星星都是一個想像力的宇宙。我用 AI 打造了一系列小工具，
+          想和你分享這些旅途中遇見的星球。
+        </p>
+        <a class="cta" href="#apps">探索星球</a>
+      </div>
+      <div class="hero-planet" aria-hidden="true">
+        <div class="planet"></div>
+        <div class="prince"></div>
+        <div class="rose"></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="apps" class="app-grid" aria-labelledby="apps-title">
+      <div class="section-heading">
+        <h2 id="apps-title">App 星球清單</h2>
+        <p>選一顆星，拜訪不同世界裡的 AI 靈感。</p>
+      </div>
+      <div class="search" role="search">
+        <label class="search-label" for="app-search">搜尋 App</label>
+        <input
+          type="search"
+          id="app-search"
+          name="app-search"
+          placeholder="輸入關鍵字、技術或敘述"
+          autocomplete="off"
+          aria-describedby="search-hint"
+        />
+        <p id="search-hint" class="search-hint">即時篩選下方 App</p>
+      </div>
+
+      <div class="cards" data-empty-message="找不到符合的 App，小王子仍在尋找中。">
+        <article class="card" data-title="SwiftUI View Hierarchy" data-tags="swiftui swift apple 視圖 層級">
+          <h3>SwiftUI View Hierarchy</h3>
+          <a class="card-link" href="https://peterpanswift.github.io/swiftui-view-hierarchy" target="_blank" rel="noopener">前往 App</a>
+        </article>
+
+        <article class="card" data-title="iTunes 歌曲搜尋" data-tags="flutter music itunes 搜尋 歌曲">
+          <h3>iTunes 歌曲搜尋</h3>
+          <a class="card-link" href="https://flutter-itunes-search.web.app" target="_blank" rel="noopener">前往 App</a>
+        </article>
+
+        <article class="card" data-title="Dictionary 樹狀圖" data-tags="claude dictionary 詞典 視覺化">
+          <h3>Dictionary 樹狀圖</h3>
+          <a class="card-link" href="https://claude.ai/public/artifacts/0ffa0efa-88f7-4c58-9283-82d659da7e5c" target="_blank" rel="noopener">前往 App</a>
+        </article>
+
+        <article class="card" data-title="個人的 Medium 文章搜尋網站" data-tags="medium ai 搜尋 文章 本機">
+          <h3>個人的 Medium 文章搜尋網站</h3>
+          <a class="card-link" href="https://medium.com/%E5%BD%BC%E5%BE%97%E6%BD%98%E7%9A%84-swift-ios-app-%E9%96%8B%E7%99%BC%E5%95%8F%E9%A1%8C%E8%A7%A3%E7%AD%94%E9%9B%86/%E5%88%A9%E7%94%A8-ai-%E5%9C%A8%E6%9C%AC%E6%A9%9F%E5%BB%BA%E7%AB%8B%E5%80%8B%E4%BA%BA%E7%9A%84-medium-%E6%96%87%E7%AB%A0%E6%90%9C%E5%B0%8B%E7%B6%B2%E7%AB%99-62dad69912ac" target="_blank" rel="noopener">前往 App</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="section-heading">
+        <h2 id="about-title">旅人的手記</h2>
+      </div>
+      <p>
+        小王子說：真正重要的事物是肉眼看不見的。這些 App 是我和 AI 一起
+        探索心中星空的紀錄。希望你也能在這些星球裡，找到屬於自己的靈感。
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© B612 AI App Gallery · 保留一點童真。</span>
+  </footer>
+
+  <script>
+    const searchInput = document.querySelector('#app-search');
+    const cardsContainer = document.querySelector('.cards');
+    const cards = Array.from(cardsContainer.querySelectorAll('.card'));
+
+    function normalise(text) {
+      return text.toLowerCase().replace(/\s+/g, '');
+    }
+
+    function updateEmptyState(filteredCount) {
+      let emptyState = cardsContainer.querySelector('.empty-state');
+      if (!emptyState) {
+        emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.textContent = cardsContainer.dataset.emptyMessage;
+        cardsContainer.appendChild(emptyState);
+      }
+      emptyState.style.display = filteredCount === 0 ? 'block' : 'none';
+    }
+
+    function filterCards(keyword) {
+      const query = normalise(keyword);
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const data = [
+          card.dataset.title || '',
+          card.dataset.tags || '',
+          card.textContent || '',
+        ]
+          .join(' ')
+          .toLowerCase();
+
+        const matches = query === '' || data.includes(query);
+        card.style.display = matches ? '' : 'none';
+        if (matches) visibleCount += 1;
+      });
+
+      updateEmptyState(visibleCount);
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (event) => {
+        filterCards(event.target.value);
+      });
+    }
+
+    filterCards('');
+  </script>
+</body>
+</html>
