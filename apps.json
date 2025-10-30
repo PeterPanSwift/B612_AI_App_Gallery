@@ -23,6 +23,27 @@
     ]
   },
   {
+    "title": "Apple App Samples Collection",
+    "url": "https://swift-app-samples.pages.dev",
+    "github": "https://github.com/PeterPanSwift/swift-app-samples",
+    "tags": [
+      "Apple",
+      "Swift",
+      "App",
+      "Sample"
+    ]
+  },
+  {
+    "title": "Can Your Mac Tame Xcode?",
+    "url": "https://peterpanswift.github.io/MacXcodeMatch",
+    "github": "https://github.com/PeterPanSwift/MacXcodeMatch",
+    "tags": [
+      "Mac",
+      "Xcode",
+      "macOS"
+    ]
+  },
+  {
     "title": "SwiftUI View Hierarchy",
     "url": "https://peterpanswift.github.io/swiftui-view-hierarchy",
     "github": "https://github.com/PeterPanSwift/swiftui-view-hierarchy",
